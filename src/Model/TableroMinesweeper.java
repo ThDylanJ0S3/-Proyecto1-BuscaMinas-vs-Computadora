@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.function.Consumer;
+
 /**
  *
  * @author Dylan Meza
@@ -11,7 +13,13 @@ public class TableroMinesweeper {
     private int numF;
     private int numC;
     private int numMina;
-    private Lista numerarCasillas;
+    private int casillasAbiertas;
+    private boolean juegoTerminado;
+    
+    private Consumer<Lista> eventoPartidaPerdida;
+   private Consumer<Lista> eventoPartidaGanada;
+    private Consumer<Casillas> casillaAbriendose;
+
 
     public TableroMinesweeper(int numF, int numC, int numMina) {
         this.numF = numF;
@@ -85,15 +93,71 @@ public class TableroMinesweeper {
         listaCasillas.imprimir();
         return listaCasillas;
     }
-        
+    
+    public Lista casillasConMinas(){
+        Lista casillasConMinas = new Lista();
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero[i].length; j++) {
+                if(tablero[i][j].isMina()){
+                casillasConMinas.agregarFinal(tablero[i][j]);
+                }
+            }
+
+        }
+        return casillasConMinas;
+    }
+            
+    public void seleccionarCasillas(int posF, int posC){
+        casillaAbriendose.accept(this.tablero[posF][posC]);
+        if(this.tablero[posF][posC].isMina()){
+            eventoPartidaPerdida.accept(casillasConMinas());
+        } else if(this.tablero[posF][posC].getNumMinasAlrededor()==0){
+            casillaAbierta(posF,posC);
+            Lista casillasVacias = obtenerCasillasAlrededor(posF, posC);
+            for(Casillas casilla : casillasVacias.getCasillas()){
+                if(!casilla.isAbierta()){
+                    seleccionarCasillas(casilla.getPosFila(),casilla.getPosColumna());    
+                }
+            }
+        }else{
+           casillaAbierta(posF,posC);
+        }
+        if(partidaGanada()){
+            eventoPartidaGanada.accept(casillasConMinas());
+        }
+    }
+
+    public void setEventoPartidaGanada(Consumer<Lista> eventoPartidaGanada) {
+        this.eventoPartidaGanada = eventoPartidaGanada;
+    }
+
+    public void setEventoPartidaPerdida(Consumer<Lista> eventoPartidaPerdida) {
+        this.eventoPartidaPerdida = eventoPartidaPerdida;
+    }
+    
+    public void setCasillaAbriendose(Consumer<Casillas> casillaAbriendose) {
+        this.casillaAbriendose = casillaAbriendose;
+    }
+    
     public void actualizarNMinas(){
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[i].length; j++) {
                 if(tablero[i][j].isMina()){
                     Lista miAlrededor = obtenerCasillasAlrededor(i, j);
-                    miAlrededor.forEach((c)->c.incrementarNumeroMinasAlrededor());
+                    miAlrededor.forEach((c)->c.incrementarNumeroMinasAlrededor());                  
                 }
             }
+        }
+    }
+    
+    public boolean partidaGanada(){
+        return casillasAbiertas>=(numF*numC)-numMina;
+    }
+    
+    public void casillaAbierta(int posF, int posC){
+        if(!this.tablero[posF][posC].isAbierta()){
+            casillasAbiertas++;
+            this.tablero[posF][posC].setAbierta(true);
         }
     }
     

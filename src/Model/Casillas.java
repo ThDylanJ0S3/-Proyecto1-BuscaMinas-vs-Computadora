@@ -16,6 +16,10 @@ public class Casillas {
         this.posColumna = posColumna;
     }
 
+    public Casillas() {
+    
+    }
+
     public int getPosFila() {
         return posFila;
     }

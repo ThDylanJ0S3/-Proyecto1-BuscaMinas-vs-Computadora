@@ -15,6 +15,18 @@ public class Lista {
         this.size = 0;
     }
     
+    public Casillas[] getCasillas() {
+        Casillas[] casillas = new Casillas[size];
+        Node auxNode = head;
+        int i = 0;
+        while (auxNode != null) {
+            casillas[i] = (Casillas) auxNode.getData();
+            auxNode = auxNode.getNext();
+            i++;
+        }
+        return casillas;
+    }
+    
     public boolean isEmpty(){
         return this.head == null;
     }
@@ -45,8 +57,8 @@ public class Lista {
     while (auxNode != null) {
         action.accept((Casillas) auxNode.getData());
         auxNode = auxNode.getNext();
+        }
     }
-}
 
     public void imprimir(){
         if (isEmpty()){

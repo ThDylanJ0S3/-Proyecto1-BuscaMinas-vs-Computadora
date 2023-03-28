@@ -3,8 +3,6 @@ package controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,26 +35,39 @@ public class mainMenuController implements Initializable {
     }    
 
     @FXML
-    private void play(ActionEvent event){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/selectDifficulty.fxml"));
-            Parent root = loader.load();
-            selectDifficultyController controlador = loader.getController();
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException ex) {
-            Logger.getLogger(mainMenuController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private void play(ActionEvent event) throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/selectDifficulty.fxml"));
+        Parent root = loader.load();
+        selectDifficultyController control = loader.getController();
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.show();
+        
+        stage.setOnCloseRequest((t) -> control.cerrar());
+        Stage myStage = (Stage) this.play.getScene().getWindow();
+        myStage.close();
     }
 
     @FXML
-    private void score(ActionEvent event) {
+    private void score(ActionEvent event) throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/scoreMenu.fxml"));
+        Parent root = loader.load();
+        scoreMenuController controlador = loader.getController();
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.show();
+        
+        stage.setOnCloseRequest((t) -> controlador.cerrar());
+        Stage myStage = (Stage) this.score.getScene().getWindow();
+        myStage.close();
     }
 
     @FXML
     private void exit(ActionEvent event) {
+        Stage stage = (Stage) this.exit.getScene().getWindow();
+        stage.close();
     }
     
 }
