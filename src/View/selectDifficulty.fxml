@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="235.0" prefWidth="214.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.selectDifficultyController">
+   <children>
+      <Button fx:id="dummyMode" layoutX="38.0" layoutY="65.0" mnemonicParsing="false" onAction="#playDummy" prefHeight="35.0" prefWidth="138.0" text="Dummy" />
+      <Button fx:id="advancedMode" layoutX="38.0" layoutY="135.0" mnemonicParsing="false" onAction="#playAdvanced" prefHeight="35.0" prefWidth="138.0" text="Advanced" />
+      <Label layoutX="23.0" layoutY="14.0" prefHeight="25.0" prefWidth="168.0" text="Seleccione la dificultad">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>
