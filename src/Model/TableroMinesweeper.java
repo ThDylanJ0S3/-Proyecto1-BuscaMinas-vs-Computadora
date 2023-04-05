@@ -111,7 +111,8 @@ public class TableroMinesweeper {
         casillaAbriendose.accept(this.tablero[posF][posC]);
         if(this.tablero[posF][posC].isMina()){
             eventoPartidaPerdida.accept(casillasConMinas());
-        } else if(this.tablero[posF][posC].getNumMinasAlrededor()==0){
+        } 
+        else if(this.tablero[posF][posC].getNumMinasAlrededor()==0){
             casillaAbierta(posF,posC);
             Lista casillasVacias = obtenerCasillasAlrededor(posF, posC);
             for(Casillas casilla : casillasVacias.getCasillas()){
@@ -119,7 +120,8 @@ public class TableroMinesweeper {
                     seleccionarCasillas(casilla.getPosFila(),casilla.getPosColumna());    
                 }
             }
-        }else{
+        }
+        else{
            casillaAbierta(posF,posC);
         }
         if(partidaGanada()){

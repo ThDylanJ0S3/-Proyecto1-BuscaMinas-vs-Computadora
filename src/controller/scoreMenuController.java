@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author Dilan
+ * @author Dylan Meza
  */
 public class scoreMenuController implements Initializable {
 

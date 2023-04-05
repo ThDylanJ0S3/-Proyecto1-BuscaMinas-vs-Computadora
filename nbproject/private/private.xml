@@ -4,9 +4,15 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/controller/selectDifficultyController.java</file>
-            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/controller/main.java</file>
-            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/controller/mainMenuController.java</file>
+            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/Model/Lista.java</file>
             <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/controller/scoreMenuController.java</file>
+            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/controller/mainMenuController.java</file>
+            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/Model/Node.java</file>
+            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/Model/TableroMinesweeper.java</file>
+            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/controller/ArduinoControl.java</file>
+            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/controller/gameViewController.java</file>
+            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/Model/Cronometro.java</file>
+            <file>file:/C:/Users/Dilan/OneDrive/Documentos/NetBeansProjects/minesweeper/src/Model/Casillas.java</file>
         </group>
     </open-files>
 </project-private>

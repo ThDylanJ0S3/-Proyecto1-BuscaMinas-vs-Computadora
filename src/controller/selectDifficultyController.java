@@ -41,6 +41,7 @@ public class selectDifficultyController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/gameView.fxml"));
             Parent root = loader.load();
             gameViewController controller = loader.getController();
+            controller.cargarControlesDummy();
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.setScene(scene);

@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.Random;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,6 +20,7 @@ public class main extends Application {
         Stage.setTitle("Mines Weeper");
         Stage.setScene(scene);
         Stage.show();
+        
     }
 
     /**

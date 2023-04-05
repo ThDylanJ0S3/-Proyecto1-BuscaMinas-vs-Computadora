@@ -2,10 +2,10 @@ package controller;
 
 import Model.Casillas;
 import Model.Lista;
+import Model.Cronometro;
 import Model.TableroMinesweeper;
-import com.sun.javafx.logging.PlatformLogger.Level;
+
 import java.io.IOException;
-import java.lang.System.Logger;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -14,20 +14,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
  * FXML Controller class
  *
- * @author Dilan
+ * @author Dylan Meza
  */
 public class gameViewController implements Initializable {
     
     int numFilas = 8;
     int numColumnas = 8;
-    int numMinas = 14;
+    int numMinas = 10;
+    int pingEnMinas = 0;
+    int cantBanderasMinas = numMinas*2;
+    Cronometro crono = new Cronometro(this);
     
     Button[][] botonesTablero;
     
@@ -35,6 +41,16 @@ public class gameViewController implements Initializable {
 
     @FXML
     private Pane visualizarJuego;
+    @FXML
+    public Label cronometro;
+    @FXML
+    private Label cantidadPings;
+    @FXML
+    private Label pingsMinas;
+    @FXML
+    private Button pilaDePistas;
+    @FXML
+    private Label movimientoMaquina;
 
     /**
      * Initializes the controller class.
@@ -42,8 +58,10 @@ public class gameViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         crearTableroMinesweeper();
-        cargarControles();
-    }    
+        crono.gameTimerInit();
+        pingsMinas.setText("Minas Encontradas: "+ pingEnMinas);
+        cantidadPings.setText("Banderas: "+ cantBanderasMinas);
+        }
     
     public void crearTableroMinesweeper(){
         tableroMinesweeper.setEventoPartidaPerdida(new Consumer<Lista>(){
@@ -52,14 +70,26 @@ public class gameViewController implements Initializable {
                 for (Casillas casillaConMina : lista.getCasillas()) {
                     botonesTablero[casillaConMina.getPosFila()][casillaConMina.getPosColumna()].setText("*");
                 }
+                visualizarJuego.setDisable(true);
+                crono.detenerCronometro();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Perdiste");
+                alert.setContentText("Presionaste una mina :(");
+                alert.show();
             }
         });
         tableroMinesweeper.setEventoPartidaGanada(new Consumer<Lista>(){
         @Override
             public void accept(Lista lista) {
                 for (Casillas casillaConMina : lista.getCasillas()) {
-                    botonesTablero[casillaConMina.getPosFila()][casillaConMina.getPosColumna()].setText("..");
+                    botonesTablero[casillaConMina.getPosFila()][casillaConMina.getPosColumna()].setText(":)");
                 }
+                visualizarJuego.setDisable(true);
+                crono.detenerCronometro();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Ganaste");
+                alert.setContentText("Evitaste todas las minas :)");
+                alert.show();
             }
         });
         tableroMinesweeper.setCasillaAbriendose(new Consumer<Casillas>(){
@@ -68,14 +98,13 @@ public class gameViewController implements Initializable {
                 botonesTablero[t.getPosFila()][t.getPosColumna()].setDisable(true);
                 botonesTablero[t.getPosFila()][t.getPosColumna()].setText(t.getNumMinasAlrededor()==0?"":t.getNumMinasAlrededor()+"");
             }
-            
         });
         tableroMinesweeper.imprimir();
         System.out.println("--------");
         tableroMinesweeper.imprimirpistas();
     }
     
-    private void cargarControles(){
+    public void cargarControlesDummy(){
         int posX = 25;
         int posY = 25;
         int ancho = 30;
@@ -103,15 +132,30 @@ public class gameViewController implements Initializable {
                     botonesTablero[i][j].setPrefHeight(alto);
                 }
                 botonesTablero[i][j].setOnMouseClicked(e -> {
-                    btnClick(e);
+                    if (e.getButton() == MouseButton.PRIMARY){
+                        btnClick(e);
+                    }
+                    if (e.getButton() == MouseButton.SECONDARY) {
+                        Button btn = (Button) e.getSource();
+                        if(cantBanderasMinas!=0){
+                            if(!btn.isDisable()){
+                            btn.setText("M");
+                            cantBanderasMinas--;
+                            pingEnMinas++;
+                            pingsMinas.setText("Minas Encontradas: "+pingEnMinas);   
+                        }}else{
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Alerta");
+                            alert.setContentText("No te quedan mas pings");
+                            alert.show();
+                            }
+                        }
                 });
-
-                 
                 visualizarJuego.getChildren().add(botonesTablero[i][j]);
             }
         }
     }
-    
+       
     private void btnClick(javafx.scene.input.MouseEvent event) {
     Button btn = (Button) event.getSource();
     String[] cordenada = btn.getId().split(",");
@@ -131,7 +175,5 @@ public class gameViewController implements Initializable {
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(gameViewController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
-        
     }
 }
