@@ -6,7 +6,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import Model.TableroMinesweeper;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,13 +60,14 @@ public class selectDifficultyController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/gameView.fxml"));
             Parent root = loader.load();
             gameViewController controller = loader.getController();
+            controller.cargarControlesAdvance();
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.show();
             
             stage.setOnCloseRequest((t) -> controller.cerrar());
-            Stage myStage = (Stage) this.dummyMode.getScene().getWindow();
+            Stage myStage = (Stage) this.advancedMode.getScene().getWindow();
             myStage.close();
         } catch (IOException ex) {
             Logger.getLogger(selectDifficultyController.class.getName()).log(Level.SEVERE, null, ex);

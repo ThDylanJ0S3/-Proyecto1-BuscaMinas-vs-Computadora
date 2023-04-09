@@ -1,5 +1,6 @@
 package Model;
 
+import controller.arduinoController;
 import java.util.function.Consumer;
 
 /**
@@ -15,9 +16,11 @@ public class TableroMinesweeper {
     private int numMina;
     private int casillasAbiertas;
     private boolean juegoTerminado;
+    private arduinoController arduino = new arduinoController();
     
     private Consumer<Lista> eventoPartidaPerdida;
-   private Consumer<Lista> eventoPartidaGanada;
+    private Consumer<Lista> eventoPartidaGanada;
+    private Consumer<Lista> eventoPartidaGanadaDummy;
     private Consumer<Casillas> casillaAbriendose;
 
 
@@ -128,9 +131,35 @@ public class TableroMinesweeper {
             eventoPartidaGanada.accept(casillasConMinas());
         }
     }
+    
+    public void seleccionarCasillasDummy(int posF, int posC){
+        casillaAbriendose.accept(this.tablero[posF][posC]);
+        if(this.tablero[posF][posC].isMina()){
+            eventoPartidaGanadaDummy.accept(casillasConMinas());
+        } 
+        else if(this.tablero[posF][posC].getNumMinasAlrededor()==0){
+            casillaAbierta(posF,posC);
+            Lista casillasVacias = obtenerCasillasAlrededor(posF, posC);
+            for(Casillas casilla : casillasVacias.getCasillas()){
+                if(!casilla.isAbierta()){
+                    seleccionarCasillas(casilla.getPosFila(),casilla.getPosColumna());    
+                }
+            }
+        }
+        else{
+           casillaAbierta(posF,posC);
+        }
+        if(partidaGanada()){
+            eventoPartidaGanadaDummy.accept(casillasConMinas());
+        }
+    }
 
     public void setEventoPartidaGanada(Consumer<Lista> eventoPartidaGanada) {
         this.eventoPartidaGanada = eventoPartidaGanada;
+    }
+    
+    public void setEventoPartidaGanadaDummy(Consumer<Lista> eventoPartidaGanadaDummy) {
+        this.eventoPartidaGanadaDummy = eventoPartidaGanadaDummy;
     }
 
     public void setEventoPartidaPerdida(Consumer<Lista> eventoPartidaPerdida) {

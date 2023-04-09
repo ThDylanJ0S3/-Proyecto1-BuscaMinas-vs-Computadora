@@ -20,6 +20,9 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import java.util.Random;
+import javafx.event.ActionEvent;
+import javafx.scene.input.KeyCode;
 
 /**
  * FXML Controller class
@@ -33,8 +36,11 @@ public class gameViewController implements Initializable {
     int numMinas = 10;
     int pingEnMinas = 0;
     int cantBanderasMinas = numMinas*2;
+    int numDePistas = 0;
+    int intentos = 0;
+    boolean dummyMode = false;
     Cronometro crono = new Cronometro(this);
-    
+    arduinoController control = new arduinoController();
     Button[][] botonesTablero;
     
     TableroMinesweeper tableroMinesweeper = new TableroMinesweeper(numFilas, numColumnas, numMinas);
@@ -61,12 +67,15 @@ public class gameViewController implements Initializable {
         crono.gameTimerInit();
         pingsMinas.setText("Minas Encontradas: "+ pingEnMinas);
         cantidadPings.setText("Banderas: "+ cantBanderasMinas);
+        control.conectar("COM3");
+
         }
     
     public void crearTableroMinesweeper(){
         tableroMinesweeper.setEventoPartidaPerdida(new Consumer<Lista>(){
         @Override
             public void accept(Lista lista) {
+                control.desconectar();
                 for (Casillas casillaConMina : lista.getCasillas()) {
                     botonesTablero[casillaConMina.getPosFila()][casillaConMina.getPosColumna()].setText("*");
                 }
@@ -81,6 +90,7 @@ public class gameViewController implements Initializable {
         tableroMinesweeper.setEventoPartidaGanada(new Consumer<Lista>(){
         @Override
             public void accept(Lista lista) {
+                control.desconectar();
                 for (Casillas casillaConMina : lista.getCasillas()) {
                     botonesTablero[casillaConMina.getPosFila()][casillaConMina.getPosColumna()].setText(":)");
                 }
@@ -89,6 +99,21 @@ public class gameViewController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Ganaste");
                 alert.setContentText("Evitaste todas las minas :)");
+                alert.show();
+            }
+        });
+        tableroMinesweeper.setEventoPartidaGanadaDummy(new Consumer<Lista>(){
+        @Override
+            public void accept(Lista lista) {
+                control.desconectar();
+                for (Casillas casillaConMina : lista.getCasillas()) {
+                    botonesTablero[casillaConMina.getPosFila()][casillaConMina.getPosColumna()].setText(":)");
+                }
+                visualizarJuego.setDisable(true);
+                crono.detenerCronometro();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Ganaste");
+                alert.setContentText("El enemigo activo una mina");
                 alert.show();
             }
         });
@@ -131,11 +156,57 @@ public class gameViewController implements Initializable {
                     botonesTablero[i][j].setPrefWidth(ancho);
                     botonesTablero[i][j].setPrefHeight(alto);
                 }
+                botonesTablero[i][j].setOnKeyPressed(ent_e -> {
+                    if (ent_e.getCode() == KeyCode.ENTER){
+                        intentos++;
+                        if(intentos==5){
+                            numDePistas++;
+                            pilaDePistas.setText("Pistas: "+numDePistas);
+                        }
+                        prsEnter(ent_e);
+                        if(dummyMode){
+                            Random random = new Random();
+                            int rI = random.nextInt(8);
+                            int rJ = random.nextInt(8);
+                            while(botonesTablero[rI][rJ].isDisable()){
+                                rI = random.nextInt(8);
+                                rJ = random.nextInt(8);
+                            }
+                            int moveDI = rI+1;
+                            int moveDJ = rJ+1;
+                            tableroMinesweeper.seleccionarCasillasDummy(rI, rJ);
+                            botonesTablero[rI][rJ].fire();
+                            dummyMode = false;
+                            movimientoMaquina.setText("El dummy eligio la casilla"+moveDI+","+moveDJ);
+                        }
+                    }
+                    });
                 botonesTablero[i][j].setOnMouseClicked(e -> {
                     if (e.getButton() == MouseButton.PRIMARY){
+                        intentos++;
+                        if(intentos==5){
+                            numDePistas++;
+                            pilaDePistas.setText("Pistas: "+numDePistas);
+                        }
                         btnClick(e);
+                        if(dummyMode){
+                            Random random = new Random();
+                            int rI = random.nextInt(8);
+                            int rJ = random.nextInt(8);
+                            while(botonesTablero[rI][rJ].isDisable()){
+                                rI = random.nextInt(8);
+                                rJ = random.nextInt(8);
+                            }
+                            int moveDI = rI+1;
+                            int moveDJ = rJ+1;
+                            tableroMinesweeper.seleccionarCasillasDummy(rI, rJ);
+                            botonesTablero[rI][rJ].fire();
+                            dummyMode = false;
+                            movimientoMaquina.setText("El dummy eligio la casilla"+moveDI+","+moveDJ);
+                        }
                     }
                     if (e.getButton() == MouseButton.SECONDARY) {
+                        control.enviar('L');
                         Button btn = (Button) e.getSource();
                         if(cantBanderasMinas!=0){
                             if(!btn.isDisable()){
@@ -156,13 +227,116 @@ public class gameViewController implements Initializable {
         }
     }
        
+    public void cargarControlesAdvance(){
+        int posX = 25;
+        int posY = 25;
+        int ancho = 30;
+        int alto = 30;
+        botonesTablero = new Button[numFilas][numColumnas];
+        for (int i = 0; i < botonesTablero.length; i++) {
+            for (int j = 0; j < botonesTablero[i].length; j++) {
+                botonesTablero[i][j] = new Button();
+                botonesTablero[i][j].setId(i+","+j);
+                botonesTablero[i][j].setBorder(null);
+                if(i==0 && j==0){
+                    botonesTablero[i][j].setLayoutX(posX);
+                    botonesTablero[i][j].setLayoutY(posY);
+                    botonesTablero[i][j].setPrefWidth(ancho);
+                    botonesTablero[i][j].setPrefHeight(alto);
+                }else if(i==0 && j!=0){
+                    botonesTablero[i][j].setLayoutX(botonesTablero[i][j-1].getLayoutX()+botonesTablero[i][j-1].getPrefWidth());
+                    botonesTablero[i][j].setLayoutY(posY);
+                    botonesTablero[i][j].setPrefWidth(ancho);
+                    botonesTablero[i][j].setPrefHeight(alto);
+                }else{
+                    botonesTablero[i][j].setLayoutX(botonesTablero[i-1][j].getLayoutX());
+                    botonesTablero[i][j].setLayoutY(botonesTablero[i-1][j].getLayoutY()+botonesTablero[i-1][j].getPrefHeight());
+                    botonesTablero[i][j].setPrefWidth(ancho);
+                    botonesTablero[i][j].setPrefHeight(alto);
+                }
+                botonesTablero[i][j].setOnKeyPressed(ent_e -> {
+                    if (ent_e.getCode() == KeyCode.ENTER){
+                        intentos++;
+                        if(intentos==5){
+                            numDePistas++;
+                            pilaDePistas.setText("Pistas: "+numDePistas);
+                        }
+                        prsEnter(ent_e);
+                        if(dummyMode){
+                            Random random = new Random();
+                            int rI = random.nextInt(8);
+                            int rJ = random.nextInt(8);
+                            while(botonesTablero[rI][rJ].isDisable()){
+                                rI = random.nextInt(8);
+                                rJ = random.nextInt(8);
+                            }
+                            int moveDI = rI+1;
+                            int moveDJ = rJ+1;
+                            tableroMinesweeper.seleccionarCasillasDummy(rI, rJ);
+                            botonesTablero[rI][rJ].fire();
+                            dummyMode = false;
+                            movimientoMaquina.setText("El dummy eligio la casilla"+moveDI+","+moveDJ);
+                        }
+                    }
+                    });
+                botonesTablero[i][j].setOnMouseClicked(e -> {
+                    if (e.getButton() == MouseButton.PRIMARY){
+                        intentos++;
+                        if(intentos==5){
+                            numDePistas++;
+                            pilaDePistas.setText("Pistas: "+numDePistas);
+                        }
+                        btnClick(e);
+                    }
+                    if (e.getButton() == MouseButton.SECONDARY) {
+                        control.enviar('L');
+                        Button btn = (Button) e.getSource();
+                        if(cantBanderasMinas!=0){
+                            if(!btn.isDisable()){
+                            btn.setText("M");
+                            cantBanderasMinas--;
+                            pingEnMinas++;
+                            pingsMinas.setText("Minas Encontradas: "+pingEnMinas);   
+                        }}else{
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Alerta");
+                            alert.setContentText("No te quedan mas pings");
+                            alert.show();
+                            }
+                        }
+                });
+                visualizarJuego.getChildren().add(botonesTablero[i][j]);
+            }
+        }
+    }
+    
+    @FXML
+    private void seleccionarPistas(ActionEvent event){
+            if(numDePistas!=0){
+                
+            }else{
+                
+            }
+    }
+    
     private void btnClick(javafx.scene.input.MouseEvent event) {
     Button btn = (Button) event.getSource();
     String[] cordenada = btn.getId().split(",");
     int posFila = Integer.parseInt(cordenada[0]);
     int posColumna = Integer.parseInt(cordenada[1]);
     tableroMinesweeper.seleccionarCasillas(posFila, posColumna);
+    dummyMode = true;
     }
+    
+    private void prsEnter(javafx.scene.input.KeyEvent event) {
+    Button btn = (Button) event.getSource();
+    String[] cordenada = btn.getId().split(",");
+    int posFila = Integer.parseInt(cordenada[0]);
+    int posColumna = Integer.parseInt(cordenada[1]);
+    tableroMinesweeper.seleccionarCasillas(posFila, posColumna);
+    dummyMode = true;
+    }
+    
     
     public void cerrar(){
         try {
