@@ -34,19 +34,15 @@ void loop() {
       digitalWrite(ledAzul, HIGH);
       delay(1000);
       digitalWrite(ledAzul, LOW);
-    }else if(data=='Mina'){
+    }else if(data =='M'){
       digitalWrite(buzzerActivo, HIGH);
-      delay(1000);
+      delay(250);
       digitalWrite(buzzerActivo, LOW);
-      delay(1000);
+      delay(250);
       digitalWrite(buzzerActivo, HIGH);
-      delay(1000);
+      delay(250);
       digitalWrite(buzzerActivo, LOW);
-      delay(1000);
-      digitalWrite(buzzerActivo, HIGH);
-      delay(1000);
-      digitalWrite(buzzerActivo, LOW);
-    }
+      }
   }
   if(digitalRead(btnLEFT) == LOW) {
     delay(100);
