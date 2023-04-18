@@ -34,6 +34,11 @@ public class mainMenuController implements Initializable {
         // TODO
     }    
 
+    /**
+    * Abre la vista para seleccionar la dificultad del juego y cierra la vista del menú principal.
+    * @param event El evento que desencadena la acción.
+    * @throws IOException Si hay un error al cargar la vista.
+    */
     @FXML
     private void play(ActionEvent event) throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/selectDifficulty.fxml"));
@@ -49,6 +54,11 @@ public class mainMenuController implements Initializable {
         myStage.close();
     }
 
+    /**
+    * Abre la vista de intrucciones y cierra la vista del menú principal.
+    * @param event El evento que desencadena la acción.
+    * @throws IOException Si hay un error al cargar la vista.
+    */
     @FXML
     private void score(ActionEvent event) throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/scoreMenu.fxml"));
@@ -64,6 +74,10 @@ public class mainMenuController implements Initializable {
         myStage.close();
     }
 
+    /**
+    * Cierra la aplicación.
+    * @param event El evento que desencadena la acción.
+    */
     @FXML
     private void exit(ActionEvent event) {
         Stage stage = (Stage) this.exit.getScene().getWindow();

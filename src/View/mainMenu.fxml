@@ -8,7 +8,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="449.0" prefWidth="413.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.mainMenuController">
    <children>
       <Button fx:id="play" layoutX="138.0" layoutY="122.0" mnemonicParsing="false" onAction="#play" prefHeight="35.0" prefWidth="138.0" text="Play" />
-      <Button fx:id="score" layoutX="138.0" layoutY="225.0" mnemonicParsing="false" onAction="#score" prefHeight="35.0" prefWidth="138.0" text="Score" />
+      <Button fx:id="score" layoutX="138.0" layoutY="225.0" mnemonicParsing="false" onAction="#score" prefHeight="35.0" prefWidth="138.0" text="Instrucciones" />
       <Button fx:id="exit" layoutX="138.0" layoutY="326.0" mnemonicParsing="false" onAction="#exit" prefHeight="35.0" prefWidth="138.0" text="Exit" />
       <Label layoutX="140.0" layoutY="14.0" prefHeight="44.0" prefWidth="138.0" text="Busca Minas">
          <font>

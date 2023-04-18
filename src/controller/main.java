@@ -1,6 +1,5 @@
 package controller;
 
-import java.util.Random;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +12,11 @@ import javafx.stage.Stage;
  */
 public class main extends Application {
     
+    /**
+    * El método start() inicia la aplicación al cargar el archivo FXML del menú principal y establecer la escena en la ventana principal.
+    * @param Stage la ventana principal de la aplicación.
+    * @throws Exception si ocurre algún error al cargar el archivo FXML.
+    */
     @Override
     public void start(Stage Stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/View/mainMenu.fxml"));

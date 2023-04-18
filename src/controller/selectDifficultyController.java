@@ -34,6 +34,11 @@ public class selectDifficultyController implements Initializable {
         // TODO
     }    
 
+    /** 
+    * Inicia el juego en modo "Dummy" cuando se hace clic en el botón correspondiente.
+    * Carga la vista del juego, configura los controles de la partida y muestra la escena.
+    * Cierra la ventana actual.
+    */
     @FXML
     private void playDummy(ActionEvent event) {
         try {
@@ -54,6 +59,11 @@ public class selectDifficultyController implements Initializable {
         }
     }
 
+    /**
+    * Inicia el juego en modo "Avanzado" cuando se hace clic en el botón correspondiente.
+    * Carga la vista del juego, configura los controles de la partida y muestra la escena.
+    * Cierra la ventana actual.
+    */
     @FXML
     private void playAdvanced(ActionEvent event){
         try {
@@ -74,6 +84,9 @@ public class selectDifficultyController implements Initializable {
         }
     }
     
+    /**
+    * Cierra la ventana actual y abre la vista del menú principal.
+    */
     public void cerrar(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/mainMenu.fxml"));
